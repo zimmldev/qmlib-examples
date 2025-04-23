@@ -1,0 +1,162 @@
+name: Sonar
+
+on: [push]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    env:
+      BUILD_TYPE: Release
+
+    #runs-on: [ ubuntu-latest ]
+    #runs-on: [ self-hosted, linux ]
+    #runs-on: ["self-hosted", "linux", "x64", "amazon"]
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      matrix:
+        include:
+          - qt_target: 'ubuntu'
+            image: loiczimm/ubuntu2204-qt6:latest
+            runner: [ ubuntu-latest ]
+          #- qt_target: 'wasm'
+          #  image: loiczimm/ubuntu2204-wasm-qt6:latest
+          #  runner: [ ubuntu-latest ]
+          - qt_target: 'macos'
+            runner: [ "self-hosted", "X64", "macOS" ]
+
+    container:
+      image: ${{ matrix.image }}
+
+    steps:
+    - name: Clean runner
+      run: |
+        rm -rf $GITHUB_WORKSPACE/*
+      if: matrix.qt_target != 'windows'
+
+    - name: Setup environment variables
+      run: |
+        echo "BUILD_NUMBER=$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.ZIMMLDEV_PAT }}
+        submodules: recursive
+
+    - name: Create Build Environment
+      run: cmake -E make_directory $GITHUB_WORKSPACE/build
+      if: matrix.qt_target != 'ios' && matrix.qt_target != 'windows'
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{ github.workspace }}/build
+      if: matrix.qt_target == 'windows'
+
+    - name: Create Build Environment
+      run: cmake -E make_directory $GITHUB_WORKSPACE/build-ios
+      if: matrix.qt_target == 'ios'
+
+    - name: Prepare ccache timestamp
+      id: cache_timestamp
+      run: |
+        current_date=`date "+%Y-%m-%d-%H;%M;%S"`
+        echo "timestamp=${current_date}" >> $GITHUB_OUTPUT
+      if: matrix.qt_target != 'windows'
+
+    - name: ccache cache files
+      uses: actions/cache@v4
+      with:
+        path: .ccache
+        key: ${{ github.repository}}-${{ github.workflow }}-${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.qt_target }}-ccache-${{ steps.cache_timestamp.outputs.timestamp }}
+        restore-keys: |
+           ${{ github.repository}}-${{ github.workflow }}-${{ github.job }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.qt_target }}-ccache-
+      if: matrix.qt_target != 'windows'
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{ github.workspace }}/build
+      run: cmake $GITHUB_WORKSPACE -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_EXAMPLE=ON -DBUILD_TESTING=OFF
+      if: matrix.qt_target != 'android' && matrix.qt_target != 'wasm' && matrix.qt_target != 'ios' && matrix.qt_target != 'windows' && matrix.qt_target != 'macos'
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{ github.workspace }}/build
+      run: cmake $GITHUB_WORKSPACE -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_EXAMPLE=ON -DBUILD_TESTING=OFF -DCMAKE_OSX_ARCHITECTURES="arm64"
+      if: matrix.qt_target == 'macos'
+
+    - name: Configure CMake
+      working-directory: ${{ github.workspace }}/build
+      run: cmake ${{ github.workspace }} -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DBUILD_EXAMPLE=OFF
+      if: matrix.qt_target == 'windows'
+
+    - name: Configure CMake WASM
+      shell: bash
+      working-directory: ${{ github.workspace }}/build
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_EXAMPLE=ON -DCMAKE_TOOLCHAIN_FILE=/opt/Qt/$QT_VERSION/wasm_singlethread/lib/cmake/Qt6/qt.toolchain.cmake
+      if: matrix.qt_target == 'wasm'
+
+    - name: Configure CMake Android
+      shell: bash
+      working-directory: ${{ github.workspace }}/build
+      run: |
+        echo "Toolchain: ${CMAKE_TOOLCHAIN_FILE}"
+        echo "Android: ${ANDROID_HOME}"
+        cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DANDROID_BUILD_ABI_armeabi-v7a=ON -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/build/cmake/android.toolchain.cmake -DCMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH};/opt/Qt/$QT_VERSION/android_armv7/" -DCMAKE_FIND_ROOT_PATH="/opt/Qt/$QT_VERSION/android_armv7/"
+      if: matrix.qt_target == 'android'
+
+    - name: Configure CMake iOS
+      shell: bash
+      working-directory: ${{ github.workspace }}/build-ios
+      run: |
+        cmake $GITHUB_WORKSPACE -G Xcode -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_TOOLCHAIN_FILE=$QT_PATH/ios/lib/cmake/Qt6/qt.toolchain.cmake -DCMAKE_PREFIX_PATH="$QT_PATH/ios" -DCMAKE_FIND_ROOT_PATH="$QT_PATH/ios"
+      if: matrix.qt_target == 'ios'
+
+    - name: Build with CCache
+      working-directory: ${{ github.workspace }}/build
+      shell: bash
+      run: |
+        export CCACHE_DIR=$GITHUB_WORKSPACE/.ccache
+        cmake --build . --config $BUILD_TYPE -j$(nproc)
+      if: matrix.qt_target != 'macos' && matrix.qt_target != 'ios' && matrix.qt_target != 'windows'
+
+    - name: Build with CCache MacOS
+      working-directory: ${{ github.workspace }}/build
+      shell: bash
+      run: |
+        export CCACHE_DIR=$GITHUB_WORKSPACE/.ccache
+        cmake --build . --config $BUILD_TYPE -j$(sysctl -n hw.ncpu)
+      if: matrix.qt_target == 'macos'
+
+    - name: Build with CCache iOS
+      working-directory: ${{ github.workspace }}/build-ios
+      shell: bash
+      run: |
+        export CCACHE_DIR=$GITHUB_WORKSPACE/.ccache
+        cmake --build . --config $BUILD_TYPE -j$(sysctl -n hw.ncpu)
+      if: matrix.qt_target == 'ios'
+
+    - name: Build with CCache
+      working-directory: ${{ github.workspace }}/build
+      shell: powershell
+      run: |
+        cmake --build . --config ${{ env.BUILD_TYPE }} -j8
+      if: matrix.qt_target == 'windows'
+
+    - name: Test Linux
+      working-directory: ${{ github.workspace }}/build
+      shell: bash
+      run: |
+        xvfb-run --server-args="-screen 0, 1280x1024x24" -a ctest -E IntegrationTest -j32 --output-on-failure -C $BUILD_TYPE
+        xvfb-run --server-args="-screen 0, 1280x1024x24" -a ctest -R IntegrationTest --repeat until-pass:3 --output-on-failure -C $BUILD_TYPE
+      if: matrix.qt_target != 'macos' && matrix.qt_target != 'ios' && matrix.qt_target != 'windows'
+
+    - name: Test MacOS
+      working-directory: ${{ github.workspace }}/build
+      shell: bash
+      run: |
+        ctest -E IntegrationTest -j32 --output-on-failure -C $BUILD_TYPE
+        ctest -R IntegrationTest --repeat until-pass:3 --output-on-failure -C $BUILD_TYPE
+      if: 0 #matrix.qt_target == 'macos'

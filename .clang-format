@@ -1,0 +1,41 @@
+BasedOnStyle: Google
+AlignAfterOpenBracket: Align
+AlignConsecutiveMacros: true
+AlignEscapedNewlines: true
+AlignOperands: true
+AllowAllArgumentsOnNextLine: false
+AllowAllConstructorInitializersOnNextLine : false
+AlignTrailingComments: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakAfterReturnType: None
+AccessModifierOffset : -4
+AlignConsecutiveAssignments : true
+BinPackArguments: false
+BinPackParameters: false
+BraceWrapping:
+  AfterClass:      true
+  AfterControlStatement: true
+  AfterCaseLabel: true
+  AfterEnum: true
+  AfterStruct: true
+  BeforeCatch: true
+  BeforeElse: true
+  SplitEmptyFunction: false
+  AfterFunction:   true
+  AfterNamespace:  true
+  AfterObjCDeclaration: true
+  AfterUnion:      true
+  IndentBraces:    false
+BreakInheritanceList: AfterColon
+BreakConstructorInitializers: BeforeComma
+BreakBeforeBraces: Custom
+PointerAlignment: Left 
+IndentWidth: 4
+TabWidth: 4
+UseTab: Always
+IndentCaseLabels: false
