@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/circle-filled.png</file>
+        <file>icons/circle-stroke.png</file>
+        <file>icons/square-filled.png</file>
+        <file>icons/square-stroke.png</file>
+        <file>icons/triangle-filled.png</file>
+        <file>icons/triangle-stroke.png</file>
+    </qresource>
+</RCC>
