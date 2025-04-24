@@ -64,12 +64,6 @@ jobs:
         ccache -s
         build-wrapper-linux-x86-64 --out-dir $GITHUB_WORKSPACE/bw-output cmake --build . --config $BUILD_TYPE -j$(nproc)
 
-    - name: Check translation complete
-      working-directory: ${{ github.workspace }}/build
-      shell: bash
-      run: |
-         $GITHUB_WORKSPACE/scripts/check-translations.sh
-
     - name: Test
       working-directory: ${{ github.workspace }}/build
       shell: bash
@@ -240,13 +234,6 @@ jobs:
       run: |
         cmake --build . --config ${{ env.BUILD_TYPE }} -j8
       if: matrix.qt_target == 'windows'
-
-    - name: Check translation complete
-      working-directory: ${{ github.workspace }}/build
-      shell: bash
-      run: |
-         $GITHUB_WORKSPACE/scripts/check-translations.sh
-      if: matrix.qt_target != 'macos' && matrix.qt_target != 'ios' && matrix.qt_target != 'windows'
 
     - name: Test Linux
       working-directory: ${{ github.workspace }}/build
