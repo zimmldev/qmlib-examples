@@ -1,0 +1,30 @@
+name: Documentation
+
+on: [push]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate-doc:
+    container:
+      image:  loiczimm/ubuntu2204-qt6:latest
+    runs-on:  [ ubuntu-latest ]
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.ZIMMLDEV_PAT }}
+
+    - name: Run QDoc
+      run: |
+        cd $GITHUB_WORKSPACE/doc
+        # Run qdoc and capture warnings
+        qdoc config.qdocconf 2>&1 | tee qdoc_output.log
+
+        # Check for warnings in the output
+        if grep -q '(qdoc) warning:' qdoc_output.log; then
+          echo "QDoc emitted warnings. Failing the job."
+          exit 1
+        fi
