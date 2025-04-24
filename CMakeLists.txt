@@ -57,7 +57,7 @@ else()
 	set(EXECUTABLE_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/exe)
 endif()
 
-
+set(BUILD_EXAMPLE ON)
 add_subdirectory(qmlib/sources)
 
 add_subdirectory(sources)
