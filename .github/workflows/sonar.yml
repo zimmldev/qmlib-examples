@@ -109,15 +109,10 @@ jobs:
           - qt_target: 'wasm'
             image: loiczimm/ubuntu2204-wasm-qt6:latest
             runner: [ ubuntu-latest ]
-          - qt_target: 'android'
-            image: loiczimm/ubuntu2204-android-qt6:latest
-            runner: [ ubuntu-latest ]
           - qt_target: 'macos'
             runner: [ "self-hosted", "X64", "macOS" ]
           - qt_target: 'ios'
             runner: [ "self-hosted", "X64", "macOS" ]
-          - qt_target: 'windows'
-            runner: [ "self-hosted", "X64", "Windows" ]
 
     container:
       image: ${{ matrix.image }}
