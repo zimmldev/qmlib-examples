@@ -111,8 +111,6 @@ jobs:
             runner: [ ubuntu-latest ]
           - qt_target: 'macos'
             runner: [ "self-hosted", "X64", "macOS" ]
-          - qt_target: 'ios'
-            runner: [ "self-hosted", "X64", "macOS" ]
 
     container:
       image: ${{ matrix.image }}
