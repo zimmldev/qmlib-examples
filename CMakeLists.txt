@@ -57,6 +57,17 @@ else()
 	set(EXECUTABLE_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/exe)
 endif()
 
+# Disable building and running tests for WebAssembly and iOS builds
+if (EMSCRIPTEN)
+        set(BUILD_TESTING OFF)
+        set(TESTING_ENABLED OFF)
+endif()
+
+if (IOS)
+        set(BUILD_TESTING OFF)
+        set(TESTING_ENABLED OFF)
+endif()
+
 set(BUILD_EXAMPLE ON)
 add_subdirectory(qmlib/sources)
 
