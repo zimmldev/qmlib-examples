@@ -1,3 +1,0 @@
-[submodule "qmlib"]
-	path = qmlib
-	url = git@github.com:zimmldev/qmlib.git
