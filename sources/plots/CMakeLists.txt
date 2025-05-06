@@ -51,7 +51,7 @@ add_example(TARGET
 	QML_FILES
 		${_qml}
 	LINK
-		Core::plots
+		QMLib::plots
 		Qt${QT_VERSION_MAJOR}::Quick
 		Qt${QT_VERSION_MAJOR}::Core
 		Qt${QT_VERSION_MAJOR}::Qml

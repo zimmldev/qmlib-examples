@@ -101,7 +101,7 @@ Window {
 
 	SnackBar {
 		id: snackbarNormal
-		text: "the text of the snackbar normal\nthe text of the snackbar normal"
+		text: "the text of the snackbar normal the text of the snackbar normal"
 
 		action: DialogAction {
 			text: "action"
