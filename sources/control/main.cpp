@@ -4,7 +4,6 @@
 #include <QFontDatabase>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <font/fontexport.h>
 
 int main(int argc, char *argv[]) {
   QGuiApplication app(argc, argv);

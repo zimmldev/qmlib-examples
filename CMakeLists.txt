@@ -68,15 +68,19 @@ if (IOS)
 	set(TESTING_ENABLED OFF)
 endif()
 
-# Specify the path to the installed library and headers
-set(QMLIB_DIR "/home/loic/work/kiddoo/sources/core/sources/qmlib/build/Desktop_Qt_6_7_3-Release/install")
+if (1)
+	# Specify the path to the installed library and headers
+	set(QMLIB_DIR "/home/loic/work/kiddoo/sources/core/sources/qmlib/build/Desktop_Qt_6_7_3-Release/install")
 
-# Add the directory containing the installed cmake configuration or manually set the include path and library
-find_package(QMLib REQUIRED PATHS "${QMLIB_DIR}/lib/cmake" NO_DEFAULT_PATH)
+	# Add the directory containing the installed cmake configuration or manually set the include path and library
+	find_package(QMLib REQUIRED PATHS "${QMLIB_DIR}/lib/cmake" NO_DEFAULT_PATH)
 
-# If find_package doesn't apply, you can manually include the installed headers and link to the library
-include_directories("${QMLIB_DIR}/include")  # Adjust the path if needed
-link_directories("${QMLIB_DIR}/lib")        # Path to library files like .so, .a, or .dll
-link_directories("${QMLIB_DIR}/arch")        # Path to library files like .so, .a, or .dll
+	# # If find_package doesn't apply, you can manually include the installed headers and link to the library
+	# include_directories("${QMLIB_DIR}/include")  # Adjust the path if needed
+	 link_directories("${QMLIB_DIR}/lib")        # Path to library files like .so, .a, or .dll
+	 link_directories("${QMLIB_DIR}/arch")        # Path to library files like .so, .a, or .dll
+else()
+	add_subdirectory(../kiddoo/sources/core/sources/qmlib/sources ${CMAKE_CURRENT_BINARY_DIR}/qmlib)
+endif()
 
 add_subdirectory(sources)
