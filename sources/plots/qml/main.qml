@@ -5,10 +5,14 @@ import Example 1.0
 WindowList {
 	title: "Map test"
 	model: ListModel {
-		ListElement {
-			text: "Gradient"
-			url: "qrc:/qt/qml/PlotsExample/qml/gradient-example.qml"
-		}
+                ListElement {
+                        text: "Gradient"
+                        url: "qrc:/qt/qml/PlotsExample/qml/gradient-example.qml"
+                }
+                ListElement {
+                        text: "Gradient Chart"
+                        url: "qrc:/qt/qml/PlotsExample/qml/gradientchart-example.qml"
+                }
 		ListElement {
 			text: "Pie"
 			url: "qrc:/qt/qml/PlotsExample/qml/pie-example.qml"

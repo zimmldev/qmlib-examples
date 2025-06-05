@@ -25,6 +25,7 @@ set(_qml
 	qml/stackedbar-example.qml
 	qml/stacked-example.qml
 	qml/gradient-example.qml
+	qml/gradientchart-example.qml
 	qml/polar-example.qml
 )
 
