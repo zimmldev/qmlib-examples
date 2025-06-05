@@ -85,7 +85,46 @@ if (QMLIB_STATIC)
 	add_subdirectory(${QMLIB_SOURCE_PATH} ${CMAKE_CURRENT_BINARY_DIR}/qmlib)
 else()
 	# Specify the path to the installed library and headers
-	set(QMLIB_DIR "/opt/qmlib")
+	set(QMLIB_DIR "/tmp/qmlib")
+
+	if(EXISTS "${QMLIB_DIR}")
+	    message(STATUS "QMLIB_DIR already exists at ${QMLIB_DIR}, skipping download.")
+	else()
+	    if(APPLE)
+		set(QMLDIR_URL "https://github.com/zimmldev/qmlib-release/releases/download/release%2F1.0.0/qmlib-1.0.0-macos.zip")
+	    elseif(UNIX AND NOT APPLE)
+		set(QMLDIR_URL "https://github.com/zimmldev/qmlib-release/releases/download/release%2F1.0.0/qmlib-1.0.0rc0-ubuntu.zip")
+	    else()
+		message(FATAL_ERROR "Unsupported platform: QMLib only supports macOS and Linux currently.")
+	    endif()
+
+	    set(QMLIB_ZIP "${CMAKE_BINARY_DIR}/qmlib.zip")
+
+	    message(STATUS "Downloading QMLib from ${QMLDIR_URL} ...")
+	    file(DOWNLOAD
+		"${QMLDIR_URL}"
+		"${QMLIB_ZIP}"
+		SHOW_PROGRESS
+		STATUS download_status
+		LOG download_log)
+
+	    list(GET download_status 0 status_code)
+	    if(NOT status_code EQUAL 0)
+		message(FATAL_ERROR "Failed to download QMLib: ${download_log}")
+	    endif()
+
+	    message(STATUS "Extracting QMLib to ${QMLIB_DIR} ...")
+	    file(MAKE_DIRECTORY "${QMLIB_DIR}")
+
+	    file(ARCHIVE_EXTRACT
+		    INPUT ${QMLIB_ZIP}
+		    DESTINATION ${QMLIB_DIR}
+	    )
+
+	    file(REMOVE "${QMLIB_ZIP}")
+	    message(STATUS "QMLib setup completed.")
+	endif()
+
 	add_definitions(-DQMLIB_IMPORT_PATH=\"${QMLIB_DIR}/qml\")
 
 	# Add the directory containing the installed cmake configuration or manually set the include path and library
