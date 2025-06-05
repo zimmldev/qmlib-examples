@@ -106,9 +106,9 @@ jobs:
           - qt_target: 'ubuntu'
             image: loiczimm/ubuntu2204-qt6:latest
             runner: [ ubuntu-latest ]
-          - qt_target: 'wasm'
-            image: loiczimm/ubuntu2204-wasm-qt6:latest
-            runner: [ ubuntu-latest ]
+          #- qt_target: 'wasm'
+          #  image: loiczimm/ubuntu2204-wasm-qt6:latest
+          #  runner: [ ubuntu-latest ]
           - qt_target: 'macos'
             runner: [ "self-hosted", "X64", "macOS" ]
 
