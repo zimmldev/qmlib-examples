@@ -35,7 +35,7 @@ Window {
 		checked: true
 	}
 
-	Chart {
+	GradientChart {
 		id: chart
 		title: "Scatters"
 		Layout.fillHeight: true
@@ -44,17 +44,15 @@ Window {
 		legend.visible: showLegendItem.checked
 		axisXVisible: showXAxisItem.checked
 		axisYVisible: showYAxisItem.checked
-		model: getModel()
 
-		GradientAreaSeries {
-			chart: chart
-			model: chart.model
-			xData: 0
-			areaColor: "blue"
-			yDataUpper: 3
-			yDataLower: 2
-			hasLower: showLower.checked
-		}
+		model: getModel()
+		xData: 0
+		yDataUpper: 3
+		yDataLower: 2
+		borderColor: "red"
+		areaColor: "green"
+		borderWidth: 3
+		hasLower: showLower.checked
 	}
 
 	Item {
