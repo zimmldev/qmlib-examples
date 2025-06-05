@@ -15,8 +15,8 @@ include(cmake/ccache.cmake)
 # Include all CMake function we will need in our projects
 include(cmake/exe.cmake)
 include(cmake/example.cmake)
+include(cmake/plugin.cmake)
 include(cmake/lib.cmake)
-include(qmlib/cmake/plugin.cmake)
 include(cmake/test.cmake)
 include(cmake/quick_test.cmake)
 include(cmake/systemlibrary.cmake)
@@ -70,7 +70,7 @@ endif()
 
 if (1)
 	# Specify the path to the installed library and headers
-	set(QMLIB_DIR "/home/loic/work/kiddoo/sources/core/sources/qmlib/build/Desktop_Qt_6_7_3-Release/install")
+	set(QMLIB_DIR "/tmp")
 
 	# Add the directory containing the installed cmake configuration or manually set the include path and library
 	find_package(QMLib REQUIRED PATHS "${QMLIB_DIR}/lib/cmake" NO_DEFAULT_PATH)
