@@ -16,6 +16,7 @@ function(add_example)
 		QML_DEPENDENCIES ${ADD_EXE_QML_DEPENDENCIES}
 				 ${ADD_EXE_TARGET}
 		LINK
+			QMLib::example
 			${ADD_EXE_LINK})
 
 	if (EMSCRIPTEN)
