@@ -73,6 +73,7 @@ endif()
 if (QMLIB_STATIC)
 	# Define a CMake variable (not an option, so user must provide via -D or cache)
 	set(QMLIB_SOURCE_PATH "" CACHE PATH "Path to the qmlib sources directory")
+	add_definitions(-DQMLIB_IMPORT_PATH=\"\")
 
 	# Check if the variable is set and is a valid directory
 	if(NOT QMLIB_SOURCE_PATH)
@@ -84,7 +85,8 @@ if (QMLIB_STATIC)
 	add_subdirectory(${QMLIB_SOURCE_PATH} ${CMAKE_CURRENT_BINARY_DIR}/qmlib)
 else()
 	# Specify the path to the installed library and headers
-	set(QMLIB_DIR "/tmp")
+	set(QMLIB_DIR "/opt/qmlib")
+	add_definitions(-DQMLIB_IMPORT_PATH=\"${QMLIB_DIR}/qml\")
 
 	# Add the directory containing the installed cmake configuration or manually set the include path and library
 	find_package(QMLib REQUIRED

@@ -42,7 +42,8 @@ int main(int argc, char *argv[])
 	engine.rootContext()->setContextProperty("datamodel", &datamodel);
 	engine.rootContext()->setContextProperty("vectormodel", &vectormodel);
 
-	const QUrl url(u"qrc:/qt/qml/Example/qml/Entry.qml"_qs);
+	engine.addImportPath(QMLIB_IMPORT_PATH);
+	const QUrl url(u"qrc:/qml/Entry.qml"_qs);
 	engine.setInitialProperties(
 		{{"source", "qrc:/qt/qml/PlotsExample/qml/main.qml"}});
 	engine.load(url);
