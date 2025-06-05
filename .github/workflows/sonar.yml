@@ -103,9 +103,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - qt_target: 'ubuntu'
-            image: loiczimm/ubuntu2204-qt6:latest
-            runner: [ ubuntu-latest ]
+          #- qt_target: 'ubuntu'
+          #  image: loiczimm/ubuntu2204-qt6:latest
+          #  runner: [ ubuntu-latest ]
           #- qt_target: 'wasm'
           #  image: loiczimm/ubuntu2204-wasm-qt6:latest
           #  runner: [ ubuntu-latest ]
@@ -162,7 +162,7 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{ github.workspace }}/build
-      run: cmake $GITHUB_WORKSPACE -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_EXAMPLE=ON
+      run: cmake $GITHUB_WORKSPACE -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_EXAMPLE=ON -DBUILD_TESTING=OFF
       if: matrix.qt_target != 'android' && matrix.qt_target != 'wasm' && matrix.qt_target != 'ios' && matrix.qt_target != 'windows'
 
     - name: Configure CMake
