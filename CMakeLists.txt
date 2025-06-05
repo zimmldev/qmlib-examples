@@ -34,6 +34,8 @@ include(CTest)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+set(QMLIB_STATIC ON)
+
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick Qml REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick Qml REQUIRED)
 
@@ -68,19 +70,26 @@ if (IOS)
 	set(TESTING_ENABLED OFF)
 endif()
 
-if (1)
+if (QMLIB_STATIC)
+	# Define a CMake variable (not an option, so user must provide via -D or cache)
+	set(QMLIB_SOURCE_PATH "" CACHE PATH "Path to the qmlib sources directory")
+
+	# Check if the variable is set and is a valid directory
+	if(NOT QMLIB_SOURCE_PATH)
+	    message(FATAL_ERROR "QMLIB_SOURCE_PATH is not set. Please specify the path to qmlib sources.")
+	elseif(NOT IS_DIRECTORY "${QMLIB_SOURCE_PATH}")
+	    message(FATAL_ERROR "QMLIB_SOURCE_PATH ('${QMLIB_SOURCE_PATH}') is not a valid directory.")
+	endif()
+
+	add_subdirectory(${QMLIB_SOURCE_PATH} ${CMAKE_CURRENT_BINARY_DIR}/qmlib)
+else()
 	# Specify the path to the installed library and headers
 	set(QMLIB_DIR "/tmp")
 
 	# Add the directory containing the installed cmake configuration or manually set the include path and library
-	find_package(QMLib REQUIRED PATHS "${QMLIB_DIR}/lib/cmake" NO_DEFAULT_PATH)
-
-	# # If find_package doesn't apply, you can manually include the installed headers and link to the library
-	# include_directories("${QMLIB_DIR}/include")  # Adjust the path if needed
-	 link_directories("${QMLIB_DIR}/lib")        # Path to library files like .so, .a, or .dll
-	 link_directories("${QMLIB_DIR}/arch")        # Path to library files like .so, .a, or .dll
-else()
-	add_subdirectory(../kiddoo/sources/core/sources/qmlib/sources ${CMAKE_CURRENT_BINARY_DIR}/qmlib)
+	find_package(QMLib REQUIRED
+		PATHS "${QMLIB_DIR}/lib/cmake"
+		NO_DEFAULT_PATH)
 endif()
 
 add_subdirectory(sources)

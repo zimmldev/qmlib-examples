@@ -13,10 +13,12 @@ function(add_exe)
 	qt_add_executable(${ADD_EXE_TARGET}
 			 ${ADD_EXE_SOURCES})
 
-	foreach(dep ${ADD_EXE_QML_DEPENDENCIES})
-		string(TOLOWER ${dep} libname)
-		set(pluginslink ${pluginslink} ${libname}plugin)
-	endforeach()
+	if (QMLIB_STATIC)
+		foreach(dep ${ADD_EXE_QML_DEPENDENCIES})
+			string(TOLOWER ${dep} libname)
+			set(pluginslink ${pluginslink} ${libname}plugin)
+		endforeach()
+	endif()
 
 	target_link_libraries(${ADD_EXE_TARGET}
 		PRIVATE

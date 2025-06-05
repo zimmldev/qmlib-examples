@@ -11,7 +11,8 @@ int main(int argc, char *argv[])
 	QGuiApplication::setOrganizationDomain("org.zimmldev");
 
 	QQmlApplicationEngine engine;
-	const QUrl url(u"qrc:/qt/qml/Example/qml/Entry.qml"_qs);
+	engine.addImportPath("/tmp/qml");
+	const QUrl url(u"qrc:/qml/Entry.qml"_qs);
 	engine.setInitialProperties(
 		{{"source", "qrc:/qt/qml/AnimationExample/qml/main.qml"}});
 	engine.load(url);
