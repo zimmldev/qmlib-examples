@@ -43,9 +43,6 @@ jobs:
 
     - name: Checkout
       uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.ZIMMLDEV_PAT }}
-        submodules: recursive
 
     - name: Create Build Environment
       run: cmake -E make_directory $GITHUB_WORKSPACE/build
@@ -78,13 +75,13 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{ github.workspace }}/build
-      run: cmake $GITHUB_WORKSPACE -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_EXAMPLE=ON -DBUILD_TESTING=OFF
+      run: cmake $GITHUB_WORKSPACE -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_EXAMPLE=ON 
       if: matrix.qt_target != 'android' && matrix.qt_target != 'wasm' && matrix.qt_target != 'ios' && matrix.qt_target != 'windows' && matrix.qt_target != 'macos'
 
     - name: Configure CMake
       shell: bash
       working-directory: ${{ github.workspace }}/build
-      run: cmake $GITHUB_WORKSPACE -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_EXAMPLE=ON -DBUILD_TESTING=OFF -DCMAKE_OSX_ARCHITECTURES="arm64"
+      run: cmake $GITHUB_WORKSPACE -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_EXAMPLE=ON -DCMAKE_OSX_ARCHITECTURES="arm64"
       if: matrix.qt_target == 'macos'
 
     - name: Configure CMake
@@ -151,7 +148,7 @@ jobs:
       run: |
         xvfb-run --server-args="-screen 0, 1280x1024x24" -a ctest -E IntegrationTest -j32 --output-on-failure -C $BUILD_TYPE
         xvfb-run --server-args="-screen 0, 1280x1024x24" -a ctest -R IntegrationTest --repeat until-pass:3 --output-on-failure -C $BUILD_TYPE
-      if: matrix.qt_target != 'macos' && matrix.qt_target != 'ios' && matrix.qt_target != 'windows'
+      if: 0 # matrix.qt_target != 'macos' && matrix.qt_target != 'ios' && matrix.qt_target != 'windows'
 
     - name: Test MacOS
       working-directory: ${{ github.workspace }}/build

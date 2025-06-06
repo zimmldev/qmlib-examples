@@ -77,7 +77,9 @@ QUICK_TEST_MAIN_WITH_SETUP(${ADD_EXE_TARGET}, Setup)
 
 		foreach(dep ${ADD_EXE_QML_DEPENDENCIES})
 			string(TOLOWER ${dep} libname)
-			set(pluginslink ${pluginslink} ${libname}plugin)
+			if (QMLIB_STATIC)
+				set(pluginslink ${pluginslink} ${libname}plugin)
+			endif()
 		endforeach()
 
 		qt_policy(SET QTP0001 NEW)
