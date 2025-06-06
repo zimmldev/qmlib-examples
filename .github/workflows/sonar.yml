@@ -78,13 +78,13 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{ github.workspace }}/build
-      run: cmake $GITHUB_WORKSPACE -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_EXAMPLE=ON -DBUILD_TESTING=OFF
+      run: cmake $GITHUB_WORKSPACE -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_EXAMPLE=ON 
       if: matrix.qt_target != 'android' && matrix.qt_target != 'wasm' && matrix.qt_target != 'ios' && matrix.qt_target != 'windows' && matrix.qt_target != 'macos'
 
     - name: Configure CMake
       shell: bash
       working-directory: ${{ github.workspace }}/build
-      run: cmake $GITHUB_WORKSPACE -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_EXAMPLE=ON -DBUILD_TESTING=OFF -DCMAKE_OSX_ARCHITECTURES="arm64"
+      run: cmake $GITHUB_WORKSPACE -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_EXAMPLE=ON -DCMAKE_OSX_ARCHITECTURES="arm64"
       if: matrix.qt_target == 'macos'
 
     - name: Configure CMake
