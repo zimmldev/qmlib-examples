@@ -1,3 +1,5 @@
+#include <license/QMLib.h>
+
 #include <QFont>
 #include <QFontDatabase>
 #include <QGuiApplication>
@@ -9,6 +11,7 @@ int main(int argc, char *argv[])
 	QGuiApplication::setApplicationName("AnimationExample");
 	QGuiApplication::setOrganizationName("zimmldev");
 	QGuiApplication::setOrganizationDomain("org.zimmldev");
+	QMLib::setLicense(QMLIB_KEY, QMLIB_SIGNATURE);
 
 	QQmlApplicationEngine engine;
 	engine.addImportPath(QMLIB_IMPORT_PATH);

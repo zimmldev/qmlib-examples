@@ -91,9 +91,9 @@ else()
 	    message(STATUS "QMLIB_DIR already exists at ${QMLIB_DIR}, skipping download.")
 	else()
 	    if(APPLE)
-		set(QMLDIR_URL "https://github.com/zimmldev/qmlib-release/releases/download/release%2F1.0.0/qmlib-1.0.0-macos.zip")
+		set(QMLDIR_URL "https://github.com/zimmldev/qmlib-release/releases/download/release%2F1.0.3/qmlib-1.0.3-macos.zip")
 	    elseif(UNIX AND NOT APPLE)
-		set(QMLDIR_URL "https://github.com/zimmldev/qmlib-release/releases/download/release%2F1.0.0/qmlib-1.0.0-ubuntu.zip")
+		set(QMLDIR_URL "https://github.com/zimmldev/qmlib-release/releases/download/release%2F1.0.3/qmlib-1.0.3-ubuntu.zip")
 	    else()
 		message(FATAL_ERROR "Unsupported platform: QMLib only supports macOS and Linux currently.")
 	    endif()
@@ -131,6 +131,36 @@ else()
 	find_package(QMLib REQUIRED
 		PATHS "${QMLIB_DIR}/lib/cmake"
 		NO_DEFAULT_PATH)
+
+	message("Using QMLib version: ${QMLib_VERSION}")
+
+	##### SIGNATURE
+	set(PYTHON_EXECUTABLE /opt/homebrew/bin/python3)
+
+	set(LICENSE_KEY "<your license key>" CACHE STRING "License key to validate" FORCE)
+	set(VALIDATE_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/validate_and_sign.py")
+
+	# Run the script and capture the output (signature)
+	execute_process(
+	    COMMAND ${CMAKE_COMMAND} -E env ${PYTHON_EXECUTABLE} ${VALIDATE_SCRIPT} ${LICENSE_KEY} ${QMLib_VERSION}
+	    RESULT_VARIABLE _result
+	    OUTPUT_VARIABLE _signature
+	    ERROR_VARIABLE _err
+	    OUTPUT_STRIP_TRAILING_WHITESPACE
+	)
+
+	if(NOT _result EQUAL 0)
+	    message(STATUS "License validation failed: ${_err}")
+	endif()
+
+	message(STATUS "License validated successfully. Signature: ${_signature}")
+
+	# Store signature in a CMake variable for later use
+	set(LICENSE_SIGNATURE "${_signature}" CACHE INTERNAL "Generated license signature")
+
+	add_definitions(-DQMLIB_KEY="${LICENSE_KEY}")
+	add_definitions(-DQMLIB_SIGNATURE="${LICENSE_SIGNATURE}")
+	#####
 endif()
 
 add_subdirectory(sources)
