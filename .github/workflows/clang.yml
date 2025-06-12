@@ -27,8 +27,6 @@ jobs:
         apt-get install clang-format -y
 
     - uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.ZIMMLDEV_PAT }}
 
     - name: Run clang-format check
       run: |
