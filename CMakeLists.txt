@@ -91,9 +91,9 @@ else()
 	    message(STATUS "QMLIB_DIR already exists at ${QMLIB_DIR}, skipping download.")
 	else()
 	    if(APPLE)
-		set(QMLDIR_URL "https://github.com/zimmldev/qmlib-release/releases/download/release%2F1.0.3/qmlib-1.0.3-macos.zip")
+		set(QMLDIR_URL "https://github.com/zimmldev/qmlib-release/releases/download/release%2F1.0.4/qmlib-1.0.4-macos.zip")
 	    elseif(UNIX AND NOT APPLE)
-		set(QMLDIR_URL "https://github.com/zimmldev/qmlib-release/releases/download/release%2F1.0.3/qmlib-1.0.3-ubuntu.zip")
+		set(QMLDIR_URL "https://github.com/zimmldev/qmlib-release/releases/download/release%2F1.0.4/qmlib-1.0.4-ubuntu.zip")
 	    else()
 		message(FATAL_ERROR "Unsupported platform: QMLib only supports macOS and Linux currently.")
 	    endif()
@@ -135,29 +135,14 @@ else()
 	message("Using QMLib version: ${QMLib_VERSION}")
 
 	##### SIGNATURE
-	set(PYTHON_EXECUTABLE /opt/homebrew/bin/python3)
 
-	set(LICENSE_KEY "<your license key>" CACHE STRING "License key to validate" FORCE)
-	set(VALIDATE_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/validate_and_sign.py")
+	# Set the license key
+	set(LICENSE_KEY "<license_key>")
 
-	# Run the script and capture the output (signature)
-	execute_process(
-	    COMMAND ${CMAKE_COMMAND} -E env ${PYTHON_EXECUTABLE} ${VALIDATE_SCRIPT} ${LICENSE_KEY} ${QMLib_VERSION}
-	    RESULT_VARIABLE _result
-	    OUTPUT_VARIABLE _signature
-	    ERROR_VARIABLE _err
-	    OUTPUT_STRIP_TRAILING_WHITESPACE
-	)
+	# Call the validate_license function and store the result
+	validate_license("${LICENSE_KEY}" LICENSE_SIGNATURE)
 
-	if(NOT _result EQUAL 0)
-	    message(STATUS "License validation failed: ${_err}")
-	endif()
-
-	message(STATUS "License validated successfully. Signature: ${_signature}")
-
-	# Store signature in a CMake variable for later use
-	set(LICENSE_SIGNATURE "${_signature}" CACHE INTERNAL "Generated license signature")
-
+	# Add definitions for the key and signature
 	add_definitions(-DQMLIB_KEY="${LICENSE_KEY}")
 	add_definitions(-DQMLIB_SIGNATURE="${LICENSE_SIGNATURE}")
 	#####
