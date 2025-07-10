@@ -7,7 +7,7 @@ function(add_unit_test)
 	cmake_parse_arguments(ADD_EXE "${options}" "${oneValueArgs}"
 						  "${multiValueArgs}" ${ARGN} )
 
-	if (NOT ANDROID AND NOT TIZEN)
+	if (NOT ANDROID)
 		find_package(Qt${QT_VERSION_MAJOR}Test REQUIRED)
 
 		add_executable(${ADD_EXE_TARGET} ${ADD_EXE_SOURCES})
