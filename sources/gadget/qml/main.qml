@@ -22,6 +22,10 @@ WindowList {
 			text: "Follow us"
 			url: "qrc:/qt/qml/GadgetExample/qml/main-followus.qml"
 		}
+                ListElement {
+                        text: "Format dialog"
+                        url: "qrc:/qt/qml/GadgetExample/qml/main-formatdialog.qml"
+                }
 		ListElement {
 			text: "Permission page"
 			url: "qrc:/qt/qml/GadgetExample/qml/main-permissionpage.qml"
