@@ -18,6 +18,7 @@ set(_qml
 	qml/main-contactform.qml
 	qml/main-developeritem.qml
 	qml/main-followus.qml
+	qml/main-formatdialog.qml
 	qml/main-permissionpage.qml
 	qml/main-servererror.qml
 	qml/main-updatebanner.qml
